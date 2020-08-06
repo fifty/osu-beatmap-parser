@@ -1,8 +1,7 @@
-from enum import Enum, unique
-from abc import ABC
-import constants
 from aenum import MultiValueEnum
+from enum import Enum, unique
 from typing import Tuple
+from abc import ABC
 
 class GeneralSettings(ABC):
     def __init__(self, \

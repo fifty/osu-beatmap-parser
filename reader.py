@@ -1,6 +1,7 @@
-import json
+from errors import CouldNotParseBeatmapException
 from typing import Tuple, Union
 import objects
+import json
 import re
 
 _SECTION_TYPES = [
@@ -86,21 +87,27 @@ class BeatmapParser:
         return None
 
     def parse(self, osu_beatmap_path: str) -> dict:
-        file = open(osu_beatmap_path, 'r+', encoding="utf8").readlines()
-        current_sector = None
-        beatmap_dict = {}
-        for line in file:
-            if line == '' or line=='\n':
-                continue
-            callback = self.__check_for_header(line)
-            if callback is not None:
-                current_sector = callback
-            if current_sector is not None:
-                self.__parse_line(line, current_sector, beatmap_dict)
-        return beatmap_dict
+        try:
+            file = open(osu_beatmap_path, 'r+', encoding="utf8").readlines()
+            current_sector = None
+            beatmap_dict = {}
+            for line in file:
+                if line == '' or line=='\n':
+                    continue
+                callback = self.__check_for_header(line)
+                if callback is not None:
+                    current_sector = callback
+                if current_sector is not None:
+                    self.__parse_line(line, current_sector, beatmap_dict)
+            return beatmap_dict
+        except:
+            raise CouldNotParseBeatmapException()
                 
     def dump(self, beatmap_dict: dict):
-        output = json.dumps(beatmap_dict).replace('\n','')
-        with open(beatmap_dict['Metadata']['title'].rstrip() + '.json', 'w') as file:
-            file.write(output)
-        print(beatmap_dict['Metadata']['title'].rstrip()+'.json written successfully')
+        try:
+            output = json.dumps(beatmap_dict).replace('\n','')
+            with open(beatmap_dict['Metadata']['title'].rstrip() + '.json', 'w') as file:
+                file.write(output)
+            print(beatmap_dict['Metadata']['title'].rstrip()+'.json has been successfully written.')
+        except Exception as e:
+            print(e)
