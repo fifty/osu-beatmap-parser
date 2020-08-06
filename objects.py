@@ -1,4 +1,5 @@
 from enum import Enum, unique, IntFlag
+from ctypes import c_uint8
 from typing import Tuple
 from abc import ABC
 import codecs
@@ -6,14 +7,24 @@ import codecs
 class GeneralSettings(ABC):
     def __init__(self,
                 audio_filename: str,
-                audio_lead_in: int,
-                preview_time: int,
-                countdown: int,
-                sample_set: str,
-                stack_leniency: float,
-                mode: int,
-                letterbox_in_breaks: int,
-                widescreen_storyboard: int):
+                audio_hash: str=None,
+                audio_lead_in: int=0,
+                preview_time: int=-1,
+                countdown: int=1,
+                sample_set: str="Normal",
+                stack_leniency: float=0.7,
+                mode: int=0,
+                letterbox_in_breaks: c_uint8=0,
+                story_fire_in_front: c_uint8=1,
+                use_skin_sprites: c_uint8=0,
+                always_show_play_field: c_uint8=0,
+                overlay_position: str="NoChange",
+                epilepsy_warning: c_uint8=0,
+                countdown_offset: int=0,
+                special_style: c_uint8=0,
+                widescreen_storyboard: c_uint8=1,
+                samples_match_playback_rate: c_uint8=0,
+                **kwargs):
         self.audio_file_name = audio_filename
         self.audio_lead_in = int(audio_lead_in)
         self.preview_time = int(preview_time)
@@ -27,7 +38,7 @@ class GeneralSettings(ABC):
 class EditorSettings(ABC):
     def __init__(self,
                 distance_spacing: float,
-                beat_divisor: int,
+                beat_divisor: float,
                 grid_size: int,
                 bookmarks: str=None,
                 timeline_zoom: float=1.0):
@@ -40,15 +51,15 @@ class EditorSettings(ABC):
 class MetaDetaSettings(ABC):
     def __init__(self,
                 title: str,
-                title_unicode: str,
                 artist: str,
-                artist_unicode: str,
                 creator: str,
                 version: str,
                 source: str,
                 tags: str,
-                beatmap_i_d: int,
-                beatmap_set_i_d: int):
+                title_unicode: str=None,
+                artist_unicode: str=None,
+                beatmap_i_d: int=None,
+                beatmap_set_i_d: int=None):
         self.title = title
         self.title_unicode = title_unicode
         self.artist = artist
@@ -57,8 +68,8 @@ class MetaDetaSettings(ABC):
         self.version = version
         self.source = source
         self.tags = tags
-        self.beatmap_id = int(beatmap_i_d)
-        self.beatmap_set_id = int(beatmap_set_i_d)
+        self.beatmap_id = beatmap_i_d
+        self.beatmap_set_id = beatmap_set_i_d
 
 class DifficultySettings(ABC):
     def __init__(self,

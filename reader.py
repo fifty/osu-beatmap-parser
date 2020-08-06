@@ -64,7 +64,7 @@ class BeatmapParser:
             'type': item[3],
             'hitsound': item[4]
         }
-        if item[5]: 
+        if len(item) > 5: 
             if not any(curve_type in item[5] for curve_type in _SLIDER_TYPES):
                 point['extras'] = item[5]
             else:

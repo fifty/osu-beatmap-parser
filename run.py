@@ -21,6 +21,7 @@ if __name__ == "__main__":
                     if song not in all_beatmaps:
                         all_beatmaps[song] = []
                     print("Reading {}".format(song))
-                    all_beatmaps[song].append(Beatmap(reader.parse(song_path))) 
-
-    print(all_beatmaps)
+                    try:
+                        all_beatmaps[song].append(Beatmap(reader.parse(song_path))) 
+                    except:
+                        print("Could not read {}".format(song))
