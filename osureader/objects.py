@@ -2,7 +2,6 @@ from enum import Enum, unique, IntFlag
 from ctypes import c_uint8
 from typing import Tuple
 from abc import ABC
-import codecs
 
 class GeneralSettings(ABC):
     def __init__(self,
