@@ -2,6 +2,9 @@ from reader import BeatmapParser
 from beatmap import Beatmap
 import os 
 
+"""
+Example of how to run the project
+"""
 if __name__ == "__main__":
     reader = BeatmapParser()
 

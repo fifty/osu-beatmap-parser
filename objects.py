@@ -4,7 +4,7 @@ from typing import Tuple
 from abc import ABC
 
 class GeneralSettings(ABC):
-    def __init__(self, \
+    def __init__(self,
                 audio_filename: str,
                 audio_lead_in: int,
                 preview_time: int,
