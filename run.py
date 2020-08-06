@@ -1,5 +1,5 @@
-from reader import BeatmapParser
-from beatmap import Beatmap
+from osureader.reader import BeatmapParser
+from osureader.beatmap import Beatmap
 import os 
 
 """

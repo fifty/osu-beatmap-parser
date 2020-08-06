@@ -1,4 +1,4 @@
-from objects import General, MetaData, Editor, Difficulty, HitCircle, TimingPoint, HitObject, TimingObject, SliderCircle
+from osureader.objects import General, MetaData, Editor, Difficulty, HitCircle, TimingPoint, HitObject, TimingObject, SliderCircle
 from typing import Union
 
 class Beatmap():
