@@ -1,7 +1,7 @@
-from aenum import MultiValueEnum
-from enum import Enum, unique
+from enum import Enum, unique, IntFlag
 from typing import Tuple
 from abc import ABC
+import codecs
 
 class GeneralSettings(ABC):
     def __init__(self,
@@ -26,12 +26,12 @@ class GeneralSettings(ABC):
 
 class EditorSettings(ABC):
     def __init__(self,
-                bookmarks: int,
                 distance_spacing: float,
                 beat_divisor: int,
                 grid_size: int,
-                timeline_zoom: float):
-        self.bookmarks = int(bookmarks)
+                bookmarks: str=None,
+                timeline_zoom: float=1.0):
+        self.bookmarks = bookmarks
         self.distance_spacing = float(distance_spacing)
         self.beat_divisor = int(beat_divisor)
         self.grid_size = int(grid_size)
@@ -94,13 +94,13 @@ class TimingObject(ABC):
         self.uninherited = int(uninherited)
         self.effects = int(effects)
 
-class HitObjectType(MultiValueEnum):
-    CIRCLE = 1
-    SLIDER = 2
-    NEW_COMBO = 3
-    SPINNER = 4
-    COMBO_SKIP = 5, 6, 7
-    MANIA_HOLD = 8
+class HitObjectType(IntFlag):
+	CIRCLE          = 0b00000001
+	SLIDER          = 0b00000010
+	NEW_COMBO       = 0b00000100
+	SPINNER         = 0b00001000
+	COMBO_SKIP      = 0b01110000
+	MANIA_HOLD      = 0b10000000
 
 @unique
 class SliderType(Enum):
@@ -127,7 +127,7 @@ class HitObject(ABC):
                 **kwargs):
         self.point = PointVector(x, y)
         self.time = int(time)
-        self.type = HitObjectType(int(type))
+        self.type = HitObjectType(HitObjectType(int(type)))
         self.hitsound = int(hitsound)
         self.extras = extras
 
@@ -136,9 +136,9 @@ class SliderObject(HitObject):
                 curve_type: str,
                 slides: int,
                 length: int,
-                edge_sounds: str,
-                edge_sets: str,
                 curve_points: Tuple[dict],
+                edge_sounds: str=None,
+                edge_sets: str=None,
                 **kwargs):
         super().__init__(**kwargs)
         self.curve_type = SliderType(curve_type)
