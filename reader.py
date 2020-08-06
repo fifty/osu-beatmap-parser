@@ -15,11 +15,8 @@ _SECTION_TYPES = [
 ]
 _SLIDER_TYPES = ['C','L','P','B']
 
-class BeatmapParser():
-    def __init__(self):
-        self.beatmap = {}
-
-    def __parse_line(self, line: str, sector: str):
+class BeatmapParser:
+    def __parse_line(self, line: str, sector: str, beatmap_dict: dict):
         if sector == "TimingPoints":
             if "," in line:
                 item = line.split(',')
@@ -33,9 +30,9 @@ class BeatmapParser():
                     'uninherited': item[6],
                     'effects': item[7]
                 }
-                if sector not in self.beatmap:
-                    self.beatmap[sector] = []
-                self.beatmap[sector].append(point)
+                if sector not in beatmap_dict:
+                    beatmap_dict[sector] = []
+                beatmap_dict[sector].append(point)
         elif sector == "HitObjects":
             if "," in line:
                 item = line.split(',')
@@ -60,17 +57,17 @@ class BeatmapParser():
                             point['edge_sets'] = item[9]
                         except:
                             pass
-                if sector not in self.beatmap:
-                    self.beatmap[sector] = []
-                self.beatmap[sector].append(point)
+                if sector not in beatmap_dict:
+                    beatmap_dict[sector] = []
+                beatmap_dict[sector].append(point)
         else:
             if ":" in line:
                 item = line.split(":")
-                if sector not in self.beatmap:
-                    self.beatmap[sector] = {}
+                if sector not in beatmap_dict:
+                    beatmap_dict[sector] = {}
                 value = item[1].replace('\n', '')
                 key = "_".join(re.sub(r"([A-Z])", r" \1", item[0]).lower().split())
-                self.beatmap[sector][key] = value
+                beatmap_dict[sector][key] = value
 
 
     def __check_for_header(self, line: str) -> str:
@@ -82,6 +79,7 @@ class BeatmapParser():
     def parse(self, osu_beatmap_path: str):
         file = open(osu_beatmap_path, 'r+', encoding="utf8").readlines()
         current_sector = None
+        beatmap_dict = {}
         for line in file:
             if line == '' or line=='\n':
                 continue
@@ -89,10 +87,11 @@ class BeatmapParser():
             if callback is not None:
                 current_sector = callback
             if current_sector is not None:
-                self.__parse_line(line, current_sector)
+                self.__parse_line(line, current_sector, beatmap_dict)
+        return beatmap_dict
                 
-    def dump(self):
-        output = json.dumps(self.beatmap).replace('\n','')
-        with open(self.beatmap['Metadata']['title'].rstrip() + '.json', 'w') as file:
+    def dump(self, beatmap_dict: dict):
+        output = json.dumps(beatmap_dict).replace('\n','')
+        with open(beatmap_dict['Metadata']['title'].rstrip() + '.json', 'w') as file:
             file.write(output)
-        print(self.beatmap['Metadata']['title'].rstrip()+'.json written successfully')
+        print(beatmap_dict['Metadata']['title'].rstrip()+'.json written successfully')
